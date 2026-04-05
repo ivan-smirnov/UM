@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Machine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: calc(50% - 3vh);
+            transform: translateY(-50%);
+        }
+
+        .toggle {
+            width: 80px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle.on {
+            background-color: #4caf50;
+        }
+
+        .toggle-handle {
+            width: 32px;
+            height: 32px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle.on .toggle-handle {
+            transform: translateX(40px);
+        }
+
+        .toggle.smooth-reset .toggle-handle {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle.sharp-reset .toggle-handle {
+            transition: none;
+        }
+
+        .toggle.smooth-reset {
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle.sharp-reset {
+            transition: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <div class="toggle" id="toggle">
+            <div class="toggle-handle"></div>
+        </div>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('toggle');
+        let isResetting = false;
+
+        toggle.addEventListener('click', function() {
+            // Предотвращаем обработку клика во время сброса
+            if (isResetting) {
+                return;
+            }
+
+            // Переключаем в ON визуально
+            toggle.classList.add('on');
+            isResetting = true;
+
+            // Генерируем случайную задержку 300-700 мс
+            const delay = Math.random() * 400 + 300;
+
+            // Случайно выбираем тип возврата (плавно или резко)
+            const resetType = Math.random() < 0.5 ? 'smooth' : 'sharp';
+
+            setTimeout(function() {
+                // Применяем класс для типа возврата ПЕРЕД удалением ON
+                if (resetType === 'smooth') {
+                    toggle.classList.add('smooth-reset');
+                } else {
+                    toggle.classList.add('sharp-reset');
+                }
+
+                // Принудительно возвращаем в OFF
+                toggle.classList.remove('on');
+
+                // Убираем классы типа возврата после завершения анимации
+                setTimeout(function() {
+                    toggle.classList.remove('smooth-reset', 'sharp-reset');
+                    isResetting = false;
+                }, resetType === 'smooth' ? 300 : 0);
+            }, delay);
+        });
+    </script>
+</body>
+</html>
